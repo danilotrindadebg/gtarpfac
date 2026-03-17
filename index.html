@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INTEL HQ — GTA RP</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0a0c0f;--bg2:#0f1318;--bg3:#141920;--bg4:#1a2030;
+  --border:#1e2a3a;--border2:#243040;
+  --green:#00ff88;--green2:#00cc66;
+  --red:#ff3355;--amber:#ffaa00;--blue:#0099ff;--purple:#aa66ff;
+  --text:#c8d8e8;--text2:#7a9ab0;--text3:#4a6a80;
+  --card:#0d1520;
+}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,0.012) 2px,rgba(0,255,136,0.012) 4px);pointer-events:none;z-index:9999;}
+
+.screen{display:none;position:fixed;inset:0;background:var(--bg);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem;}
+.screen.active{display:flex;}
+.logo-title{font-size:2rem;font-weight:700;letter-spacing:6px;color:var(--green);text-shadow:0 0 20px rgba(0,255,136,.35);}
+.logo-sub{font-size:.78rem;letter-spacing:4px;color:var(--text2);margin-top:4px;text-align:center;}
+.box{background:var(--bg2);border:1px solid var(--border2);width:340px;padding:1.8rem;}
+.box h2{font-size:.85rem;letter-spacing:3px;color:var(--text2);margin-bottom:1.2rem;text-transform:uppercase;}
+.f{margin-bottom:.9rem;}
+.f label{display:block;font-size:.68rem;letter-spacing:2px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;}
+.f input,.f select{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:9px 11px;font-family:'Rajdhani',sans-serif;font-size:.92rem;outline:none;}
+.f input:focus,.f select:focus{border-color:var(--green);}
+.btn-full{width:100%;background:var(--green);color:#000;border:none;padding:11px;font-family:'Rajdhani',sans-serif;font-size:.92rem;font-weight:700;letter-spacing:3px;cursor:pointer;text-transform:uppercase;margin-top:.3rem;}
+.btn-full:hover{background:var(--green2);}
+.btn-full.red{background:var(--red);color:#fff;}
+.btn-full.red:hover{background:#cc2244;}
+.err{color:var(--red);font-size:.75rem;letter-spacing:1px;text-align:center;min-height:1rem;margin-top:.4rem;}
+.ok{color:var(--green);}
+.link-row{text-align:center;margin-top:.8rem;}
+.link-row a{color:var(--blue);font-size:.78rem;letter-spacing:1px;cursor:pointer;}
+.link-row a:hover{color:var(--green);}
+
+#app{display:none;}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 1.2rem;height:50px;display:flex;align-items:center;justify-content:space-between;}
+.hdr-l{display:flex;align-items:center;gap:.8rem;}
+.hdr-badge{background:var(--green);color:#000;padding:2px 9px;font-size:.65rem;font-weight:700;letter-spacing:2px;}
+.hdr-badge.adm{background:var(--purple);}
+.hdr-name{font-size:1rem;font-weight:700;letter-spacing:2px;color:var(--green);}
+.hdr-role{font-size:.72rem;color:var(--text2);letter-spacing:1px;background:var(--bg3);padding:2px 8px;border:1px solid var(--border);}
+.hdr-r{display:flex;align-items:center;gap:.8rem;}
+.btn-out{background:transparent;border:1px solid var(--border2);color:var(--text2);padding:4px 12px;font-family:'Rajdhani',sans-serif;font-size:.7rem;letter-spacing:2px;cursor:pointer;text-transform:uppercase;}
+.btn-out:hover{border-color:var(--red);color:var(--red);}
+
+.nav{background:var(--bg3);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;}
+.nb{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--text2);padding:11px 18px;font-family:'Rajdhani',sans-serif;font-size:.8rem;letter-spacing:2px;cursor:pointer;text-transform:uppercase;white-space:nowrap;}
+.nb:hover{color:var(--text);}
+.nb.active{color:var(--green);border-bottom-color:var(--green);}
+.nb.adm-tab{color:var(--purple);}
+.nb.adm-tab.active{color:var(--purple);border-bottom-color:var(--purple);}
+
+.main{padding:1.2rem;max-width:1100px;margin:0 auto;}
+.tc{display:none;}.tc.active{display:block;}
+
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.2rem;}
+.sc{background:var(--card);border:1px solid var(--border);padding:.9rem;position:relative;overflow:hidden;}
+.sc::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;}
+.sc.g::before{background:var(--green)}.sc.r::before{background:var(--red)}.sc.a::before{background:var(--amber)}.sc.b::before{background:var(--blue)}.sc.p::before{background:var(--purple)}
+.sl{font-size:.65rem;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:5px;}
+.sv{font-size:1.7rem;font-weight:700;}
+.ss{font-size:.7rem;color:var(--text3);margin-top:1px;}
+
+.sec{font-size:.72rem;letter-spacing:3px;color:var(--text2);text-transform:uppercase;margin-bottom:.8rem;border-bottom:1px solid var(--border);padding-bottom:.4rem;display:flex;align-items:center;justify-content:space-between;}
+
+table{width:100%;border-collapse:collapse;font-size:.87rem;}
+th{background:var(--bg3);color:var(--text3);font-size:.65rem;letter-spacing:2px;text-transform:uppercase;padding:9px 11px;text-align:left;border-bottom:1px solid var(--border);}
+td{padding:9px 11px;border-bottom:1px solid var(--border);color:var(--text);}
+tr:hover td{background:var(--bg3);}
+.badge{display:inline-block;padding:2px 7px;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;}
+.bg{background:rgba(0,255,136,.12);color:var(--green);border:1px solid rgba(0,255,136,.25);}
+.ba{background:rgba(255,170,0,.12);color:var(--amber);border:1px solid rgba(255,170,0,.25);}
+.br{background:rgba(255,51,85,.12);color:var(--red);border:1px solid rgba(255,51,85,.25);}
+.bb{background:rgba(0,153,255,.12);color:var(--blue);border:1px solid rgba(0,153,255,.25);}
+.bp{background:rgba(170,102,255,.12);color:var(--purple);border:1px solid rgba(170,102,255,.25);}
+
+.fc{background:var(--card);border:1px solid var(--border);padding:1.2rem;margin-bottom:.8rem;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+@media(max-width:580px){.fg{grid-template-columns:1fr;}}
+.fg2{grid-column:1/-1;}
+.fgg label{display:block;font-size:.65rem;letter-spacing:2px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;}
+.fgg input,.fgg select,.fgg textarea{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:9px 11px;font-family:'Rajdhani',sans-serif;font-size:.9rem;outline:none;resize:vertical;}
+.fgg input:focus,.fgg select:focus,.fgg textarea:focus{border-color:var(--green);}
+.fgg textarea{min-height:70px;}
+.btn-p{background:var(--green);color:#000;border:none;padding:9px 22px;font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:2px;cursor:pointer;text-transform:uppercase;}
+.btn-p:hover{background:var(--green2);}
+.btn-p.purple{background:var(--purple);color:#fff;}
+.btn-p.purple:hover{background:#8844ee;}
+.btn-d{background:transparent;border:1px solid var(--red);color:var(--red);padding:4px 11px;font-family:'Rajdhani',sans-serif;font-size:.7rem;letter-spacing:1px;cursor:pointer;text-transform:uppercase;}
+.btn-d:hover{background:rgba(255,51,85,.1);}
+.btn-s{background:transparent;border:1px solid var(--border2);color:var(--text2);padding:4px 9px;font-family:'Rajdhani',sans-serif;font-size:.7rem;letter-spacing:1px;cursor:pointer;text-transform:uppercase;}
+.btn-s:hover{border-color:var(--green);color:var(--green);}
+.btn-pdf{background:transparent;border:1px solid var(--blue);color:var(--blue);padding:6px 14px;font-family:'Rajdhani',sans-serif;font-size:.75rem;letter-spacing:2px;cursor:pointer;text-transform:uppercase;}
+.btn-pdf:hover{background:rgba(0,153,255,.1);}
+
+.ig{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.9rem;}
+.ic{background:var(--card);border:1px solid var(--border);padding:.9rem;}
+.ich{display:flex;align-items:center;gap:9px;margin-bottom:9px;}
+.iav{width:38px;height:38px;background:var(--bg4);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:var(--green);flex-shrink:0;}
+.in{font-size:.95rem;font-weight:700;}.ir{font-size:.7rem;color:var(--text3);letter-spacing:1px;}
+.irow{display:flex;gap:5px;align-items:flex-start;margin-bottom:3px;font-size:.8rem;}
+.ik{color:var(--text3);width:70px;flex-shrink:0;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;}
+.iv{color:var(--text);}
+.ia{display:flex;gap:5px;margin-top:9px;padding-top:9px;border-top:1px solid var(--border);}
+
+.sb{display:flex;gap:7px;margin-bottom:.9rem;}
+.sb input{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 11px;font-family:'Rajdhani',sans-serif;font-size:.87rem;outline:none;}
+.sb input:focus{border-color:var(--green);}
+
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--text3);}
+.empty-i{font-size:2rem;margin-bottom:.6rem;}
+.empty p{font-size:.8rem;letter-spacing:1px;}
+
+.adm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.9rem;margin-bottom:1.2rem;}
+.adm-card{background:var(--card);border:1px solid var(--border);padding:1rem;}
+.adm-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;}
+.adm-fn{font-size:1rem;font-weight:700;color:var(--text);}
+.adm-tag{font-size:.7rem;color:var(--text3);letter-spacing:2px;}
+.adm-stats{display:flex;gap:.5rem;margin-bottom:.8rem;flex-wrap:wrap;}
+.adm-stat{font-size:.72rem;color:var(--text2);background:var(--bg3);padding:3px 8px;border:1px solid var(--border);}
+.adm-actions{display:flex;gap:6px;flex-wrap:wrap;padding-top:.8rem;border-top:1px solid var(--border);}
+
+#toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--green);color:#000;padding:9px 18px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:2px;font-size:.8rem;z-index:99999;transform:translateY(80px);transition:transform .25s;pointer-events:none;}
+#toast.show{transform:translateY(0);}
+
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);padding:1.5rem;width:320px;}
+.modal h3{font-size:.9rem;letter-spacing:3px;color:var(--text2);text-transform:uppercase;margin-bottom:1.1rem;}
+.modal-btns{display:flex;gap:8px;margin-top:1rem;}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- LOGIN -->
+<div class="screen active" id="s-login">
+  <div style="text-align:center">
+    <div class="logo-title">&#9650; INTEL HQ</div>
+    <div class="logo-sub">Sistema de Inteligência — GTA RP</div>
+  </div>
+  <div class="box">
+    <h2>Acesso Seguro</h2>
+    <div class="f"><label>Tipo de Acesso</label>
+      <select id="l-tipo" onchange="updateLoginType()">
+        <option value="fac">Facção</option>
+        <option value="adm">Administrador</option>
+      </select>
+    </div>
+    <div id="l-fac-row" class="f"><label>Facção</label>
+      <select id="l-fac"><option value="">— Selecione —</option></select>
+    </div>
+    <div id="l-nivel-row" class="f"><label>Nível</label>
+      <select id="l-nivel">
+        <option value="lider">Líder</option>
+        <option value="membro">Membro</option>
+      </select>
+    </div>
+    <div class="f"><label>Senha</label><input type="password" id="l-pass" placeholder="••••••••"></div>
+    <button class="btn-full" onclick="doLogin()">Entrar</button>
+    <div class="err" id="l-err"></div>
+  </div>
+</div>
+
+<!-- CHANGE PASS MODAL -->
+<div class="modal-bg" id="modal-pass">
+  <div class="modal">
+    <h3>Alterar Senha</h3>
+    <div class="f fgg"><label>Nova senha (Líder)</label><input type="password" id="np-lider" placeholder="••••••••"></div>
+    <div class="f fgg"><label>Nova senha (Membro)</label><input type="password" id="np-membro" placeholder="••••••••"></div>
+    <div class="err" id="np-err"></div>
+    <div class="modal-btns">
+      <button class="btn-p" onclick="savePasswords()">Salvar</button>
+      <button class="btn-s" onclick="closeModal('modal-pass')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE FAC MODAL -->
+<div class="modal-bg" id="modal-create-fac">
+  <div class="modal">
+    <h3>Nova Facção</h3>
+    <div class="f fgg"><label>Nome</label><input type="text" id="cf-nome" placeholder="Ex: Grove Street Families"></div>
+    <div class="f fgg"><label>Sigla (3-6 letras)</label><input type="text" id="cf-tag" placeholder="Ex: GSF" maxlength="6"></div>
+    <div class="f fgg"><label>Senha Líder</label><input type="password" id="cf-lider" placeholder="Senha do líder"></div>
+    <div class="f fgg"><label>Senha Membro</label><input type="password" id="cf-membro" placeholder="Senha dos membros"></div>
+    <div class="err" id="cf-err"></div>
+    <div class="modal-btns">
+      <button class="btn-p purple" onclick="createFaction()">Criar Facção</button>
+      <button class="btn-s" onclick="closeModal('modal-create-fac')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE FAC MODAL -->
+<div class="modal-bg" id="modal-del-fac">
+  <div class="modal">
+    <h3>Excluir Facção</h3>
+    <p style="font-size:.85rem;color:var(--text2);margin-bottom:1rem;">Tem certeza que deseja excluir <strong id="del-fac-name" style="color:var(--red)"></strong>? Todos os dados serão perdidos.</p>
+    <div class="modal-btns">
+      <button class="btn-full red" onclick="confirmDeleteFaction()">Excluir</button>
+      <button class="btn-s" onclick="closeModal('modal-del-fac')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-l">
+      <span class="hdr-badge" id="hdr-badge">INTEL HQ</span>
+      <span class="hdr-name" id="hdr-name">—</span>
+      <span class="hdr-role" id="hdr-role">—</span>
+    </div>
+    <div class="hdr-r">
+      <button class="btn-out" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+  <div class="nav" id="nav-bar"></div>
+  <div class="main">
+
+    <div class="tc" id="tc-dashboard">
+      <div class="sg" id="stats-g"></div>
+      <div class="sec">Últimos registros</div>
+      <div id="recent-t"></div>
+    </div>
+
+    <div class="tc" id="tc-integrantes">
+      <div class="sb"><input id="si" placeholder="Buscar nome, codinome, facção..." oninput="renderInts()"></div>
+      <div class="sec">Integrantes catalogados</div>
+      <div class="ig" id="ig"></div>
+    </div>
+
+    <div class="tc" id="tc-veiculos">
+      <div class="sb"><input id="sv" placeholder="Buscar placa, modelo, facção..." oninput="renderVeis()"></div>
+      <div class="sec">Veículos rastreados</div>
+      <div id="vl"></div>
+    </div>
+
+    <div class="tc" id="tc-locais">
+      <div class="sb"><input id="sl" placeholder="Buscar local, facção..." oninput="renderLocs()"></div>
+      <div class="sec">Localizações mapeadas</div>
+      <div id="ll"></div>
+    </div>
+
+    <div class="tc" id="tc-adicionar">
+      <div class="sec">Tipo de Registro</div>
+      <div style="display:flex;gap:7px;margin-bottom:1.2rem;flex-wrap:wrap;">
+        <button class="btn-p" id="at-i" onclick="setAT('integrante')">Integrante</button>
+        <button class="btn-s" id="at-v" onclick="setAT('veiculo')">Veículo</button>
+        <button class="btn-s" id="at-l" onclick="setAT('local')">Localização</button>
+      </div>
+      <div class="fc fgg" id="f-int">
+        <div class="sec">Novo Integrante</div>
+        <div class="fg">
+          <div class="f"><label>Nome / Codinome</label><input type="text" id="i-nom" placeholder="Nome ou apelido"></div>
+          <div class="f"><label>Facção Alvo</label><input type="text" id="i-fac" placeholder="Ex: Vagos, Meraki..."></div>
+          <div class="f"><label>Cargo / Patente</label><input type="text" id="i-car" placeholder="Ex: Soldado, Líder..."></div>
+          <div class="f"><label>Perigo</label><select id="i-per"><option value="baixo">Baixo</option><option value="medio">Médio</option><option value="alto">Alto</option><option value="extremo">Extremo</option></select></div>
+          <div class="f fg2"><label>Observações</label><textarea id="i-obs" placeholder="Comportamento, horários..."></textarea></div>
+          <div class="f"><label>Foto (URL)</label><input type="text" id="i-foto" placeholder="https://..."></div>
+        </div>
+        <button class="btn-p" onclick="addInt()">Salvar Integrante</button>
+      </div>
+      <div class="fc fgg" id="f-vei" style="display:none">
+        <div class="sec">Novo Veículo</div>
+        <div class="fg">
+          <div class="f"><label>Placa</label><input type="text" id="v-pla" placeholder="Ex: ABC-1234"></div>
+          <div class="f"><label>Modelo</label><input type="text" id="v-mod" placeholder="Ex: Sultan RS"></div>
+          <div class="f"><label>Cor</label><input type="text" id="v-cor" placeholder="Ex: Preto fosco"></div>
+          <div class="f"><label>Facção Alvo</label><input type="text" id="v-fac" placeholder="Ex: Vagos..."></div>
+          <div class="f"><label>Proprietário</label><input type="text" id="v-don" placeholder="Nome se conhecido"></div>
+          <div class="f"><label>Status</label><select id="v-sta"><option value="ativo">Ativo</option><option value="suspeito">Suspeito</option><option value="apreendido">Apreendido</option></select></div>
+          <div class="f fg2"><label>Observações</label><textarea id="v-obs" placeholder="Locais avistados, modificações..."></textarea></div>
+        </div>
+        <button class="btn-p" onclick="addVei()">Salvar Veículo</button>
+      </div>
+      <div class="fc fgg" id="f-loc" style="display:none">
+        <div class="sec">Nova Localização</div>
+        <div class="fg">
+          <div class="f"><label>Nome do Local</label><input type="text" id="lo-nom" placeholder="Ex: QG dos Vagos"></div>
+          <div class="f"><label>Facção Alvo</label><input type="text" id="lo-fac" placeholder="Ex: Vagos..."></div>
+          <div class="f fg2"><label>Descrição / Endereço</label><textarea id="lo-des" placeholder="Coordenadas, pontos de referência..."></textarea></div>
+          <div class="f"><label>Tipo</label><select id="lo-tip"><option value="qg">QG / Base</option><option value="venda">Ponto de Venda</option><option value="esconderijo">Esconderijo</option><option value="reuniao">Reunião</option><option value="outro">Outro</option></select></div>
+          <div class="f"><label>Risco</label><select id="lo-ris"><option value="baixo">Baixo</option><option value="medio">Médio</option><option value="alto">Alto</option></select></div>
+          <div class="f fg2"><label>Observações</label><textarea id="lo-obs" placeholder="Patrulhas, horários..."></textarea></div>
+        </div>
+        <button class="btn-p" onclick="addLoc()">Salvar Localização</button>
+      </div>
+    </div>
+
+    <div class="tc" id="tc-config">
+      <div class="sec">Configurações da Facção</div>
+      <div class="fc fgg" style="max-width:380px">
+        <div class="f"><label>Nova Senha — Líder</label><input type="password" id="cfg-l" placeholder="Deixe em branco para não alterar"></div>
+        <div class="f"><label>Nova Senha — Membro</label><input type="password" id="cfg-m" placeholder="Deixe em branco para não alterar"></div>
+        <div class="err" id="cfg-err" style="margin-bottom:.5rem"></div>
+        <button class="btn-p" onclick="saveConfig()">Salvar Senhas</button>
+      </div>
+    </div>
+
+    <div class="tc" id="tc-adm">
+      <div class="sg">
+        <div class="sc p"><div class="sl">Facções</div><div class="sv" id="adm-total-fac">0</div><div class="ss">cadastradas</div></div>
+        <div class="sc g"><div class="sl">Integrantes</div><div class="sv" id="adm-total-int">0</div><div class="ss">no sistema</div></div>
+        <div class="sc a"><div class="sl">Veículos</div><div class="sv" id="adm-total-vei">0</div><div class="ss">rastreados</div></div>
+        <div class="sc b"><div class="sl">Locais</div><div class="sv" id="adm-total-loc">0</div><div class="ss">mapeados</div></div>
+      </div>
+      <div class="sec">
+        <span>Gerenciar Facções</span>
+        <button class="btn-p purple" onclick="openModal('modal-create-fac')">+ Nova Facção</button>
+      </div>
+      <div class="adm-grid" id="adm-fac-grid"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script>
+const SK='intelhq_v2';
+let db={factions:{},adm:{pass:'admin2025'}};
+let sess={faction:null,role:null};
+let delFacTarget=null;
+
+function loadDB(){
+  try{const r=localStorage.getItem(SK);if(r)db=JSON.parse(r);}
+  catch(e){db={factions:{},adm:{pass:'admin2025'}};}
+  if(!db.factions)db.factions={};
+  if(!db.adm)db.adm={pass:'admin2025'};
+  if(Object.keys(db.factions).length===0){
+    db.factions['Families']={tag:'FAM',passLider:'fam123',passMembro:'fammembro',integrantes:[],veiculos:[],locais:[]};
+    db.factions['Vagos']={tag:'VAG',passLider:'vag123',passMembro:'vagmembro',integrantes:[],veiculos:[],locais:[]};
+    saveDB();
+  }
+  populateFacSel();
+}
+function saveDB(){try{localStorage.setItem(SK,JSON.stringify(db));}catch(e){}}
+
+function populateFacSel(){
+  const sel=document.getElementById('l-fac');
+  sel.innerHTML='<option value="">— Selecione —</option>';
+  Object.keys(db.factions).forEach(f=>{
+    const o=document.createElement('option');o.value=f;
+    o.textContent=f+' ['+db.factions[f].tag+']';sel.appendChild(o);
+  });
+}
+
+function updateLoginType(){
+  const t=document.getElementById('l-tipo').value;
+  document.getElementById('l-fac-row').style.display=t==='adm'?'none':'block';
+  document.getElementById('l-nivel-row').style.display=t==='adm'?'none':'block';
+}
+
+function doLogin(){
+  const tipo=document.getElementById('l-tipo').value;
+  const pass=document.getElementById('l-pass').value;
+  const err=document.getElementById('l-err');
+  if(tipo==='adm'){
+    if(pass!==db.adm.pass){err.textContent='Senha incorreta';return;}
+    sess={faction:null,role:'adm'};enterApp();return;
+  }
+  const fac=document.getElementById('l-fac').value;
+  const nivel=document.getElementById('l-nivel').value;
+  if(!fac){err.textContent='Selecione uma facção';return;}
+  const f=db.factions[fac];
+  const expectedPass=nivel==='lider'?f.passLider:f.passMembro;
+  if(pass!==expectedPass){err.textContent='Senha incorreta';return;}
+  sess={faction:fac,role:nivel};enterApp();
+}
+
+function enterApp(){
+  document.getElementById('s-login').classList.remove('active');
+  document.getElementById('app').style.display='block';
+  document.getElementById('l-pass').value='';
+  document.getElementById('l-err').textContent='';
+  const isAdm=sess.role==='adm';
+  const badge=document.getElementById('hdr-badge');
+  badge.textContent=isAdm?'ADM':'INTEL HQ';
+  badge.className='hdr-badge'+(isAdm?' adm':'');
+  document.getElementById('hdr-name').textContent=isAdm?'Administrador':(sess.faction+' ['+(db.factions[sess.faction]||{}).tag+']');
+  document.getElementById('hdr-role').textContent=isAdm?'ADM GERAL':sess.role.toUpperCase();
+  buildNav();showTC('dashboard');
+}
+
+function buildNav(){
+  const isAdm=sess.role==='adm';const isLider=sess.role==='lider';
+  const nav=document.getElementById('nav-bar');
+  let tabs=[{id:'dashboard',label:'Dashboard'}];
+  if(!isAdm){
+    tabs.push({id:'integrantes',label:'Integrantes'});
+    tabs.push({id:'veiculos',label:'Veículos'});
+    tabs.push({id:'locais',label:'Locais'});
+    if(isLider){tabs.push({id:'adicionar',label:'+ Novo Registro'});tabs.push({id:'config',label:'Configurações'});}
+  }
+  if(isAdm)tabs.push({id:'adm',label:'▲ Painel ADM',adm:true});
+  nav.innerHTML=tabs.map(t=>`<button class="nb${t.adm?' adm-tab':''}" id="nb-${t.id}" onclick="showTC('${t.id}',this)">${t.label}</button>`).join('');
+}
+
+function showTC(id,btn){
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  const tc=document.getElementById('tc-'+id);if(tc)tc.classList.add('active');
+  const nb=document.getElementById('nb-'+id);if(nb)nb.classList.add('active');
+  if(id==='dashboard')renderDash();
+  if(id==='integrantes')renderInts();
+  if(id==='veiculos')renderVeis();
+  if(id==='locais')renderLocs();
+  if(id==='adm')renderAdm();
+}
+
+function doLogout(){
+  sess={faction:null,role:null};
+  document.getElementById('app').style.display='none';
+  document.getElementById('s-login').classList.add('active');
+  populateFacSel();
+}
+
+function cd(){return db.factions[sess.faction];}
+
+function renderDash(){
+  if(sess.role==='adm'){renderAdmDash();return;}
+  const d=cd();
+  document.getElementById('stats-g').innerHTML=`
+    <div class="sc g"><div class="sl">Integrantes</div><div class="sv">${d.integrantes.length}</div><div class="ss">catalogados</div></div>
+    <div class="sc r"><div class="sl">Veículos</div><div class="sv">${d.veiculos.length}</div><div class="ss">rastreados</div></div>
+    <div class="sc a"><div class="sl">Localizações</div><div class="sv">${d.locais.length}</div><div class="ss">mapeadas</div></div>
+    <div class="sc b"><div class="sl">Total Intel</div><div class="sv">${d.integrantes.length+d.veiculos.length+d.locais.length}</div><div class="ss">registros</div></div>`;
+  const all=[...d.integrantes.map(i=>({tipo:'Integrante',nome:i.nome,fac:i.faccao,cls:'bg'})),...d.veiculos.map(v=>({tipo:'Veículo',nome:v.placa+' '+v.modelo,fac:v.faccao,cls:'ba'})),...d.locais.map(l=>({tipo:'Local',nome:l.nome,fac:l.faccao,cls:'bb'}))].slice(-8).reverse();
+  const rt=document.getElementById('recent-t');
+  if(!all.length){rt.innerHTML='<div class="empty"><div class="empty-i">📋</div><p>Nenhum registro ainda.</p></div>';return;}
+  rt.innerHTML=`<table><thead><tr><th>Tipo</th><th>Nome</th><th>Facção Alvo</th></tr></thead><tbody>${all.map(a=>`<tr><td><span class="badge ${a.cls}">${a.tipo}</span></td><td>${a.nome}</td><td style="color:var(--amber)">${a.fac}</td></tr>`).join('')}</tbody></table>`;
+}
+function renderAdmDash(){
+  const facs=Object.keys(db.factions);let ti=0,tv=0,tl=0;
+  facs.forEach(f=>{ti+=db.factions[f].integrantes.length;tv+=db.factions[f].veiculos.length;tl+=db.factions[f].locais.length;});
+  document.getElementById('stats-g').innerHTML=`
+    <div class="sc p"><div class="sl">Facções</div><div class="sv">${facs.length}</div><div class="ss">ativas</div></div>
+    <div class="sc g"><div class="sl">Integrantes</div><div class="sv">${ti}</div><div class="ss">no sistema</div></div>
+    <div class="sc a"><div class="sl">Veículos</div><div class="sv">${tv}</div><div class="ss">rastreados</div></div>
+    <div class="sc b"><div class="sl">Locais</div><div class="sv">${tl}</div><div class="ss">mapeados</div></div>`;
+  document.getElementById('recent-t').innerHTML=`<div class="empty"><p>Selecione "Painel ADM" para gerenciar as facções.</p></div>`;
+}
+
+function renderInts(){
+  const d=cd();const q=(document.getElementById('si').value||'').toLowerCase();
+  const list=d.integrantes.filter(i=>!q||i.nome.toLowerCase().includes(q)||i.faccao.toLowerCase().includes(q));
+  const g=document.getElementById('ig');
+  if(!list.length){g.innerHTML='<div class="empty"><div class="empty-i">👤</div><p>Nenhum integrante encontrado.</p></div>';return;}
+  const canDel=sess.role==='lider';
+  g.innerHTML=list.map(i=>`<div class="ic"><div class="ich">${i.foto?`<img src="${i.foto}" style="width:38px;height:38px;object-fit:cover;border:1px solid var(--border2);flex-shrink:0" onerror="this.style.display='none'">`:''}
+    <div class="iav">${i.nome.charAt(0).toUpperCase()}</div><div><div class="in">${i.nome}</div><div class="ir">${i.cargo||'—'}</div></div></div>
+    <div class="irow"><span class="ik">Facção</span><span class="iv" style="color:var(--amber)">${i.faccao}</span></div>
+    <div class="irow"><span class="ik">Perigo</span><span class="badge ${perigoC(i.perigo)}">${i.perigo||'—'}</span></div>
+    ${i.obs?`<div class="irow"><span class="ik">Obs</span><span class="iv" style="font-size:.75rem;color:var(--text2)">${i.obs}</span></div>`:''}
+    ${canDel?`<div class="ia"><button class="btn-d" onclick="removeItem('integrantes','${i.id}')">Remover</button></div>`:''}</div>`).join('');
+}
+
+function renderVeis(){
+  const d=cd();const q=(document.getElementById('sv').value||'').toLowerCase();
+  const list=d.veiculos.filter(v=>!q||v.placa.toLowerCase().includes(q)||v.modelo.toLowerCase().includes(q)||v.faccao.toLowerCase().includes(q));
+  const el=document.getElementById('vl');
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-i">🚗</div><p>Nenhum veículo rastreado.</p></div>';return;}
+  const canDel=sess.role==='lider';
+  el.innerHTML=`<table><thead><tr><th>Placa</th><th>Modelo</th><th>Cor</th><th>Facção</th><th>Dono</th><th>Status</th>${canDel?'<th></th>':''}</tr></thead><tbody>${list.map(v=>`<tr><td style="font-family:monospace;color:var(--green)">${v.placa}</td><td>${v.modelo}</td><td>${v.cor||'—'}</td><td style="color:var(--amber)">${v.faccao}</td><td>${v.dono||'?'}</td><td><span class="badge ${v.status==='apreendido'?'br':v.status==='suspeito'?'ba':'bg'}">${v.status}</span></td>${canDel?`<td><button class="btn-d" onclick="removeItem('veiculos','${v.id}')">✕</button></td>`:''}</tr>`).join('')}</tbody></table>`;
+}
+
+function renderLocs(){
+  const d=cd();const q=(document.getElementById('sl').value||'').toLowerCase();
+  const list=d.locais.filter(l=>!q||l.nome.toLowerCase().includes(q)||l.faccao.toLowerCase().includes(q));
+  const el=document.getElementById('ll');
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-i">📍</div><p>Nenhuma localização mapeada.</p></div>';return;}
+  const canDel=sess.role==='lider';
+  el.innerHTML=`<table><thead><tr><th>Local</th><th>Facção</th><th>Tipo</th><th>Risco</th><th>Desc.</th>${canDel?'<th></th>':''}</tr></thead><tbody>${list.map(l=>`<tr><td style="font-weight:600">${l.nome}</td><td style="color:var(--amber)">${l.faccao}</td><td>${l.tipo||'—'}</td><td><span class="badge ${l.risco==='alto'?'br':l.risco==='medio'?'ba':'bg'}">${l.risco}</span></td><td style="font-size:.78rem;color:var(--text2);max-width:180px">${l.desc||'—'}</td>${canDel?`<td><button class="btn-d" onclick="removeItem('locais','${l.id}')">✕</button></td>`:''}</tr>`).join('')}</tbody></table>`;
+}
+
+function setAT(t){
+  ['integrante','veiculo','local'].forEach(x=>{document.getElementById('f-'+x.substring(0,3)).style.display=x===t?'block':'none';});
+  document.getElementById('at-i').className=t==='integrante'?'btn-p':'btn-s';
+  document.getElementById('at-v').className=t==='veiculo'?'btn-p':'btn-s';
+  document.getElementById('at-l').className=t==='local'?'btn-p':'btn-s';
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
+
+async function addInt(){
+  const nom=document.getElementById('i-nom').value.trim();const fac=document.getElementById('i-fac').value.trim();
+  if(!nom||!fac){toast('Preencha nome e facção',1);return;}
+  cd().integrantes.push({id:uid(),nome:nom,faccao:fac,cargo:document.getElementById('i-car').value.trim(),perigo:document.getElementById('i-per').value,obs:document.getElementById('i-obs').value.trim(),foto:document.getElementById('i-foto').value.trim()});
+  saveDB();['i-nom','i-fac','i-car','i-obs','i-foto'].forEach(x=>document.getElementById(x).value='');
+  toast('Integrante salvo!');renderDash();
+}
+async function addVei(){
+  const pla=document.getElementById('v-pla').value.trim().toUpperCase();const fac=document.getElementById('v-fac').value.trim();
+  if(!pla||!fac){toast('Preencha placa e facção',1);return;}
+  cd().veiculos.push({id:uid(),placa:pla,faccao:fac,modelo:document.getElementById('v-mod').value.trim(),cor:document.getElementById('v-cor').value.trim(),dono:document.getElementById('v-don').value.trim(),status:document.getElementById('v-sta').value,obs:document.getElementById('v-obs').value.trim()});
+  saveDB();['v-pla','v-fac','v-mod','v-cor','v-don','v-obs'].forEach(x=>document.getElementById(x).value='');
+  toast('Veículo salvo!');renderDash();
+}
+async function addLoc(){
+  const nom=document.getElementById('lo-nom').value.trim();const fac=document.getElementById('lo-fac').value.trim();
+  if(!nom||!fac){toast('Preencha nome e facção',1);return;}
+  cd().locais.push({id:uid(),nome:nom,faccao:fac,desc:document.getElementById('lo-des').value.trim(),tipo:document.getElementById('lo-tip').value,risco:document.getElementById('lo-ris').value,obs:document.getElementById('lo-obs').value.trim()});
+  saveDB();['lo-nom','lo-fac','lo-des','lo-obs'].forEach(x=>document.getElementById(x).value='');
+  toast('Localização salva!');renderDash();
+}
+async function removeItem(type,id){
+  cd()[type]=cd()[type].filter(i=>i.id!==id);saveDB();toast('Removido.');
+  if(type==='integrantes')renderInts();else if(type==='veiculos')renderVeis();else renderLocs();renderDash();
+}
+
+async function saveConfig(){
+  const nl=document.getElementById('cfg-l').value.trim();const nm=document.getElementById('cfg-m').value.trim();
+  const err=document.getElementById('cfg-err');
+  if(!nl&&!nm){err.textContent='Informe ao menos uma senha';return;}
+  if(nl)cd().passLider=nl;if(nm)cd().passMembro=nm;saveDB();
+  err.className='err ok';err.textContent='Senhas atualizadas!';
+  document.getElementById('cfg-l').value='';document.getElementById('cfg-m').value='';
+  setTimeout(()=>{err.textContent='';err.className='err';},2000);toast('Senhas salvas!');
+}
+
+function renderAdm(){
+  const facs=Object.keys(db.factions);let ti=0,tv=0,tl=0;
+  facs.forEach(f=>{ti+=db.factions[f].integrantes.length;tv+=db.factions[f].veiculos.length;tl+=db.factions[f].locais.length;});
+  document.getElementById('adm-total-fac').textContent=facs.length;
+  document.getElementById('adm-total-int').textContent=ti;
+  document.getElementById('adm-total-vei').textContent=tv;
+  document.getElementById('adm-total-loc').textContent=tl;
+  const g=document.getElementById('adm-fac-grid');
+  if(!facs.length){g.innerHTML='<div class="empty"><p>Nenhuma facção cadastrada.</p></div>';return;}
+  g.innerHTML=facs.map(f=>{const d=db.factions[f];return `<div class="adm-card">
+    <div class="adm-card-hdr"><div><div class="adm-fn">${f}</div><div class="adm-tag">[${d.tag}]</div></div><span class="badge bp">ATIVA</span></div>
+    <div class="adm-stats"><span class="adm-stat">${d.integrantes.length} integrantes</span><span class="adm-stat">${d.veiculos.length} veículos</span><span class="adm-stat">${d.locais.length} locais</span></div>
+    <div class="adm-actions"><button class="btn-s" onclick="openChangePass('${f}')">Alterar Senhas</button><button class="btn-pdf" onclick="exportPDF('${f}')">Exportar PDF</button><button class="btn-d" onclick="openDelFac('${f}')">Excluir</button></div>
+  </div>`}).join('');
+}
+
+let passTarget=null;
+function openChangePass(fac){
+  passTarget=fac;document.getElementById('np-lider').value='';document.getElementById('np-membro').value='';document.getElementById('np-err').textContent='';openModal('modal-pass');
+}
+function savePasswords(){
+  const nl=document.getElementById('np-lider').value.trim();const nm=document.getElementById('np-membro').value.trim();
+  const err=document.getElementById('np-err');
+  if(!nl&&!nm){err.textContent='Informe ao menos uma senha';return;}
+  if(nl)db.factions[passTarget].passLider=nl;if(nm)db.factions[passTarget].passMembro=nm;saveDB();
+  closeModal('modal-pass');toast('Senhas de '+passTarget+' atualizadas!');
+}
+
+function createFaction(){
+  const nome=document.getElementById('cf-nome').value.trim();const tag=document.getElementById('cf-tag').value.trim().toUpperCase();
+  const lider=document.getElementById('cf-lider').value;const membro=document.getElementById('cf-membro').value;
+  const err=document.getElementById('cf-err');
+  if(!nome||!tag||!lider||!membro){err.textContent='Preencha todos os campos';return;}
+  if(db.factions[nome]){err.textContent='Facção já existe';return;}
+  db.factions[nome]={tag,passLider:lider,passMembro:membro,integrantes:[],veiculos:[],locais:[]};saveDB();
+  closeModal('modal-create-fac');['cf-nome','cf-tag','cf-lider','cf-membro'].forEach(x=>document.getElementById(x).value='');
+  toast('Facção '+nome+' criada!');renderAdm();populateFacSel();
+}
+
+function openDelFac(fac){delFacTarget=fac;document.getElementById('del-fac-name').textContent=fac;openModal('modal-del-fac');}
+function confirmDeleteFaction(){
+  if(!delFacTarget)return;delete db.factions[delFacTarget];saveDB();
+  closeModal('modal-del-fac');toast('Facção '+delFacTarget+' excluída.');delFacTarget=null;renderAdm();populateFacSel();
+}
+
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+function exportPDF(facName){
+  const fac=db.factions[facName];if(!fac){toast('Facção não encontrada',1);return;}
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const W=210,M=15;let y=M;
+  doc.setFillColor(10,12,15);doc.rect(0,0,W,30,'F');
+  doc.setTextColor(0,255,136);doc.setFontSize(16);doc.setFont('helvetica','bold');
+  doc.text('INTEL HQ — RELATÓRIO DE INTELIGÊNCIA',W/2,12,{align:'center'});
+  doc.setFontSize(9);doc.setTextColor(122,154,176);
+  doc.text('Facção: '+facName+' ['+fac.tag+'] | Gerado em: '+new Date().toLocaleString('pt-BR'),W/2,20,{align:'center'});
+  doc.setDrawColor(0,255,136);doc.setLineWidth(0.5);doc.line(M,25,W-M,25);y=35;
+  doc.setFillColor(13,21,32);doc.rect(M,y,W-M*2,18,'F');
+  doc.setTextColor(200,216,232);doc.setFontSize(9);doc.setFont('helvetica','normal');
+  doc.text('Integrantes: '+fac.integrantes.length,M+5,y+7);doc.text('Veículos: '+fac.veiculos.length,M+55,y+7);
+  doc.text('Localizações: '+fac.locais.length,M+100,y+7);doc.text('Total: '+(fac.integrantes.length+fac.veiculos.length+fac.locais.length),M+150,y+7);y+=26;
+  if(fac.integrantes.length>0){
+    doc.setTextColor(0,255,136);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text('INTEGRANTES CATALOGADOS',M,y);y+=5;
+    doc.autoTable({startY:y,margin:{left:M,right:M},head:[['Nome/Codinome','Facção Alvo','Cargo','Perigo','Observações']],body:fac.integrantes.map(i=>[i.nome,i.faccao,i.cargo||'—',i.perigo,i.obs||'—']),styles:{fontSize:8,cellPadding:3,textColor:[200,216,232],fillColor:[13,21,32],lineColor:[30,42,58],lineWidth:0.3},headStyles:{fillColor:[20,25,32],textColor:[0,255,136],fontStyle:'bold'},alternateRowStyles:{fillColor:[15,19,24]}});y=doc.lastAutoTable.finalY+8;
+  }
+  if(fac.veiculos.length>0){
+    if(y>230){doc.addPage();y=M;}
+    doc.setTextColor(0,255,136);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text('VEÍCULOS RASTREADOS',M,y);y+=5;
+    doc.autoTable({startY:y,margin:{left:M,right:M},head:[['Placa','Modelo','Cor','Facção','Dono','Status']],body:fac.veiculos.map(v=>[v.placa,v.modelo,v.cor||'—',v.faccao,v.dono||'?',v.status]),styles:{fontSize:8,cellPadding:3,textColor:[200,216,232],fillColor:[13,21,32],lineColor:[30,42,58],lineWidth:0.3},headStyles:{fillColor:[20,25,32],textColor:[0,255,136],fontStyle:'bold'},alternateRowStyles:{fillColor:[15,19,24]}});y=doc.lastAutoTable.finalY+8;
+  }
+  if(fac.locais.length>0){
+    if(y>230){doc.addPage();y=M;}
+    doc.setTextColor(0,255,136);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text('LOCALIZAÇÕES MAPEADAS',M,y);y+=5;
+    doc.autoTable({startY:y,margin:{left:M,right:M},head:[['Nome','Facção','Tipo','Risco','Descrição']],body:fac.locais.map(l=>[l.nome,l.faccao,l.tipo||'—',l.risco,l.desc||'—']),styles:{fontSize:8,cellPadding:3,textColor:[200,216,232],fillColor:[13,21,32],lineColor:[30,42,58],lineWidth:0.3},headStyles:{fillColor:[20,25,32],textColor:[0,255,136],fontStyle:'bold'},alternateRowStyles:{fillColor:[15,19,24]}});
+  }
+  const pages=doc.internal.getNumberOfPages();
+  for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFillColor(10,12,15);doc.rect(0,285,W,12,'F');doc.setTextColor(74,106,128);doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text('INTEL HQ — DOCUMENTO CONFIDENCIAL — '+facName,M,291);doc.text('Página '+i+'/'+pages,W-M,291,{align:'right'});}
+  doc.save('INTELHQ_'+facName.replace(/ /g,'_')+'.pdf');toast('PDF exportado!');
+}
+
+function perigoC(p){const m={baixo:'bg',medio:'ba',alto:'br',extremo:'br'};return m[p]||'ba';}
+let toastT;
+function toast(msg,err=0){
+  const t=document.getElementById('toast');t.textContent=msg;t.style.background=err?'var(--red)':'var(--green)';t.style.color=err?'#fff':'#000';
+  t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+loadDB();
+</script>
+</body>
+</html>
